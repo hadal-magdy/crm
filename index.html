@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14532d">
+<title>Leads CRM</title>
+<style>
+:root{--bg:#f4f5f0;--card:#fff;--ink:#1c2520;--mute:#6b766f;--line:#e0e4dc;--brand:#14532d;--brand2:#1f7a45;--warn:#b45309;--bad:#b91c1c;--r:14px}
+@media(prefers-color-scheme:dark){:root{--bg:#121714;--card:#1b231e;--ink:#e8eee9;--mute:#93a097;--line:#2b362f;--brand:#4ade80;--brand2:#22c55e;--warn:#fbbf24;--bad:#f87171}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);min-height:100vh}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);outline:none}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.btn{border:0;border-radius:10px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+@media(prefers-color-scheme:dark){.btn{color:#08210f}}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--bad);border:1px solid var(--bad)}
+#auth{max-width:380px;margin:0 auto;padding:14vh 20px 20px}
+#auth h1{font-size:28px;margin:0 0 4px}
+#auth p{color:var(--mute);margin:0 0 20px}
+#auth .btn{width:100%;margin-top:16px}
+.link{background:none;border:0;color:var(--brand2);padding:12px 0;cursor:pointer;text-decoration:underline}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:10px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.top{display:flex;gap:8px;align-items:center}
+.top h2{margin:0;font-size:20px;flex:1}
+.top .btn{padding:8px 12px;font-size:14px}
+#q{margin-top:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+@media(prefers-color-scheme:dark){.chip.on{color:#08210f}}
+main{padding:12px 14px 96px;max-width:720px;margin:0 auto}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.name{font-weight:650;font-size:17px;overflow-wrap:anywhere}
+.phone{color:var(--mute);font-size:14px;direction:ltr;display:inline-block}
+.badge{font-size:12px;padding:3px 9px;border-radius:99px;font-weight:600;white-space:nowrap}
+.s-new{background:#dbeafe;color:#1e40af}.s-progress{background:#fef3c7;color:#92400e}.s-interested{background:#dcfce7;color:#166534}
+.s-visit{background:#ede9fe;color:#5b21b6}.s-no{background:#fee2e2;color:#991b1b}.s-closed{background:#d1fae5;color:#065f46}
+.meta{margin-top:8px;font-size:13px;color:var(--mute)}
+.meta.due{color:var(--warn);font-weight:600}.meta.late{color:var(--bad);font-weight:600}
+.last{margin-top:6px;font-size:14px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts a{flex:1;text-align:center;padding:9px;border-radius:10px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:14px;font-weight:600}
+.empty{text-align:center;color:var(--mute);padding:48px 16px}
+#fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;font-size:30px;line-height:1;padding:0;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:18px 18px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+@media(min-width:600px){.sheet-bg{align-items:center}.sheet{border-radius:18px}}
+.sheet h3{margin:0 0 4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hist{margin-top:16px;border-top:1px solid var(--line);padding-top:8px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.note small{display:block;color:var(--mute);margin-bottom:3px}
+.bar{display:flex;gap:8px;margin-top:18px}.bar .btn{flex:1}
+</style>
+</head>
+<body>
+
+<section id="auth" hidden>
+  <h1>Leads CRM</h1>
+  <p>Sign in to see your clients and calls.</p>
+  <div id="setup" hidden class="note">Firebase isn't set up yet. Open <b>index.html</b>, find <b>firebaseConfig</b> and paste your project values.</div>
+  <label for="em">Email</label><input id="em" type="email" autocomplete="email">
+  <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
+  <div class="err" id="aerr"></div>
+  <button class="btn" id="go">Sign in</button>
+  <button class="link" id="swap">Create an account</button>
+  <button class="link" id="reset">Forgot password?</button>
+</section>
+
+<div id="app" hidden>
+  <header>
+    <div class="top"><h2>Leads</h2>
+      <button class="btn ghost" id="imp">Import</button>
+      <button class="btn ghost" id="out">Sign out</button></div>
+    <input id="q" type="search" placeholder="Search name or phone">
+    <div class="chips" id="chips"></div>
+  </header>
+  <main id="list"></main>
+  <button class="btn" id="fab" aria-label="Add lead">+</button>
+</div>
+
+<div id="modal"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,doc,addDoc,updateDoc,deleteDoc,onSnapshot,arrayUnion} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ====== PASTE YOUR FIREBASE CONFIG HERE ====== */
+const firebaseConfig={
+  apiKey:"YOUR_API_KEY",
+  authDomain:"YOUR_PROJECT.firebaseapp.com",
+  projectId:"YOUR_PROJECT",
+  appId:"YOUR_APP_ID"
+};
+/* ============================================= */
+
+const STATUS={new:"New",progress:"In progress",interested:"Interested",visit:"Visit / meeting",no:"Not interested",closed:"Closed"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const configured=!firebaseConfig.apiKey.startsWith("YOUR");
+let auth,db,uid,leads=[],filter="all",unsub=null,signup=false;
+
+if(!configured){$("#auth").hidden=false;$("#setup").hidden=false}
+else{
+  const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+  onAuthStateChanged(auth,u=>{
+    if(u){uid=u.uid;$("#auth").hidden=true;$("#app").hidden=false;
+      unsub=onSnapshot(collection(db,"users",uid,"leads"),s=>{leads=s.docs.map(d=>({id:d.id,...d.data()}));render()},e=>alert("Load error: "+e.message));
+    }else{uid=null;if(unsub)unsub();leads=[];$("#app").hidden=true;$("#auth").hidden=false}
+  });
+}
+
+/* ---- auth ---- */
+$("#swap").onclick=()=>{signup=!signup;$("#go").textContent=signup?"Create account":"Sign in";$("#swap").textContent=signup?"I already have an account":"Create an account";$("#aerr").textContent=""};
+$("#go").onclick=async()=>{
+  if(!configured)return;
+  const e=$("#em").value.trim(),p=$("#pw").value;$("#aerr").textContent="";
+  try{signup?await createUserWithEmailAndPassword(auth,e,p):await signInWithEmailAndPassword(auth,e,p)}
+  catch(x){$("#aerr").textContent=x.code==="auth/weak-password"?"Password needs 6+ characters.":x.code==="auth/email-already-in-use"?"This email already has an account.":"Wrong email or password."}
+};
+$("#reset").onclick=async()=>{
+  const e=$("#em").value.trim();if(!e||!configured){$("#aerr").textContent="Type your email first.";return}
+  try{await sendPasswordResetEmail(auth,e);$("#aerr").textContent="Reset link sent to your email."}catch{$("#aerr").textContent="Couldn't send the reset email."}
+};
+$("#out").onclick=()=>signOut(auth);
+
+/* ---- helpers ---- */
+const waNum=p=>{let d=String(p).replace(/\D/g,"");if(d.startsWith("00"))d=d.slice(2);else if(d.startsWith("0"))d="20"+d.slice(1);return d};
+const fmt=t=>new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const endToday=()=>{const d=new Date();d.setHours(23,59,59,999);return d.getTime()};
+const callTs=l=>l.nextCall?new Date(l.nextCall).getTime():null;
+const isDue=l=>l.status!=="no"&&l.status!=="closed"&&callTs(l)!==null&&callTs(l)<=endToday();
+
+/* ---- list ---- */
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  const counts={all:leads.length,due:leads.filter(isDue).length};
+  Object.keys(STATUS).forEach(k=>counts[k]=leads.filter(l=>l.status===k).length);
+  $("#chips").innerHTML=[["all","All"],["due","Calls due"],...Object.entries(STATUS)]
+    .map(([k,v])=>`<button class="chip ${filter===k?"on":""}" data-k="${k}">${v} ${counts[k]}</button>`).join("");
+  document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{filter=c.dataset.k;render()});
+  let r=leads.filter(l=>(filter==="all"||(filter==="due"?isDue(l):l.status===filter))&&(!q||(l.name||"").toLowerCase().includes(q)||(l.phone||"").includes(q)));
+  r.sort((a,b)=>{const x=callTs(a),y=callTs(b);if(x&&y)return x-y;if(x)return -1;if(y)return 1;return (b.createdAt||0)-(a.createdAt||0)});
+  $("#list").innerHTML=r.length?r.map(card).join(""):`<div class="empty">${leads.length?"No leads match.":"No leads yet. Tap + to add your first client."}</div>`;
+  document.querySelectorAll(".lead").forEach(el=>el.onclick=e=>{if(e.target.closest("a"))return;openSheet(el.dataset.id)});
+}
+function card(l){
+  const t=callTs(l),late=t&&t<Date.now()&&l.status!=="no"&&l.status!=="closed",due=isDue(l);
+  const last=(l.notes||[]).slice(-1)[0];
+  return `<div class="lead" data-id="${l.id}">
+    <div class="row"><div><div class="name" dir="auto">${esc(l.name)}</div><span class="phone">${esc(l.phone)}</span></div>
+    <span class="badge s-${l.status}">${STATUS[l.status]||""}</span></div>
+    ${t?`<div class="meta ${late?"late":due?"due":""}">${late?"Overdue: ":"Next call: "}${fmt(t)}</div>`:""}
+    ${last?`<div class="last" dir="auto">${esc(last.text)}</div>`:""}
+    <div class="acts"><a href="tel:${esc(l.phone)}">Call</a><a href="https://wa.me/${waNum(l.phone)}" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>`;
+}
+$("#q").oninput=render;
+
+/* ---- add / edit sheet ---- */
+function closeModal(){$("#modal").innerHTML=""}
+function openSheet(id){
+  const l=id?leads.find(x=>x.id===id):{name:"",phone:"",status:"new",nextCall:"",details:"",notes:[]};
+  if(!l)return;
+  const hist=(l.notes||[]).slice().reverse().map(n=>`<div class="note"><small>${fmt(n.at)}</small>${esc(n.text)}</div>`).join("");
+  $("#modal").innerHTML=`<div class="sheet-bg" id="bg"><div class="sheet">
+    <h3>${id?"Client details":"New lead"}</h3>
+    <label>Name</label><input id="f-name" dir="auto" value="${esc(l.name)}">
+    <label>Phone</label><input id="f-phone" type="tel" inputmode="tel" value="${esc(l.phone)}">
+    <div class="two"><div><label>Status</label><select id="f-status">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${l.status===k?"selected":""}>${v}</option>`).join("")}</select></div>
+    <div><label>Next call</label><input id="f-call" type="datetime-local" value="${esc(l.nextCall)}"></div></div>
+    <label>Interest (area, budget, unit...)</label><input id="f-det" dir="auto" value="${esc(l.details)}">
+    <label>Add note or client reply</label><textarea id="f-note" rows="3" dir="auto" placeholder="What did he say?"></textarea>
+    <div class="bar"><button class="btn ghost" id="x">Cancel</button><button class="btn" id="save">Save</button></div>
+    ${id?`<div class="bar"><button class="btn danger" id="del">Delete lead</button></div><div class="hist"><b>History</b>${hist||`<div class="note">No notes yet.</div>`}</div>`:""}
+  </div></div>`;
+  $("#bg").onclick=e=>{if(e.target.id==="bg")closeModal()};
+  $("#x").onclick=closeModal;
+  $("#save").onclick=async()=>{
+    const name=$("#f-name").value.trim(),phone=$("#f-phone").value.trim();
+    if(!name||!phone){alert("Name and phone are required.");return}
+    const data={name,phone,status:$("#f-status").value,nextCall:$("#f-call").value,details:$("#f-det").value.trim()};
+    const note=$("#f-note").value.trim();
+    try{
+      const col=collection(db,"users",uid,"leads");
+      if(id){if(note)data.notes=arrayUnion({text:note,at:Date.now()});await updateDoc(doc(col,id),data)}
+      else{data.createdAt=Date.now();data.notes=note?[{text:note,at:Date.now()}]:[];await addDoc(col,data)}
+      closeModal();
+    }catch(e){alert("Save failed: "+e.message)}
+  };
+  if(id)$("#del").onclick=async()=>{if(confirm("Delete this lead and its history?")){await deleteDoc(doc(db,"users",uid,"leads",id));closeModal()}};
+}
+$("#fab").onclick=()=>openSheet(null);
+
+/* ---- bulk import ---- */
+$("#imp").onclick=()=>{
+  $("#modal").innerHTML=`<div class="sheet-bg" id="bg"><div class="sheet"><h3>Import numbers</h3>
+  <label>One client per line: name, phone</label>
+  <textarea id="bulk" rows="8" dir="auto" placeholder="Ahmed Ali, 01012345678&#10;Mona Hassan, 01155556666"></textarea>
+  <div class="bar"><button class="btn ghost" id="x">Cancel</button><button class="btn" id="run">Import</button></div></div></div>`;
+  $("#bg").onclick=e=>{if(e.target.id==="bg")closeModal()};
+  $("#x").onclick=closeModal;
+  $("#run").onclick=async()=>{
+    const rows=$("#bulk").value.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>{const p=s.split(/[,;\t]/);return{name:(p[0]||"").trim(),phone:(p[1]||"").trim()}}).filter(r=>r.name&&r.phone);
+    if(!rows.length){alert("No valid lines found. Use: name, phone");return}
+    const have=new Set(leads.map(l=>l.phone));let n=0;
+    for(const r of rows){if(have.has(r.phone))continue;have.add(r.phone);
+      await addDoc(collection(db,"users",uid,"leads"),{...r,status:"new",nextCall:"",details:"",notes:[],createdAt:Date.now()+n});n++}
+    closeModal();alert(n+" added"+(rows.length>n?", "+(rows.length-n)+" skipped (already saved).":"."));
+  };
+};
+</script>
+</body>
+</html>
